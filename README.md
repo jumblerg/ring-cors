@@ -12,7 +12,7 @@ the promise of black-box abstraction, realized here in the form of a ring handle
 
 ## application
 
-simply pass the wrapper some regular expressions or a predicate that accopts the request's origin as its argument.
+simply pass the wrapper some regular expressions or a predicate that accepts the request's origin.
 
 ```clojure
 (require '[ring.middleware.cors :refer [wrap-cors]])
