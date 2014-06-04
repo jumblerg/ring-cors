@@ -17,8 +17,6 @@ simply pass the wrapper some regular expressions or a predicate that accepts the
 ```clojure
 (require '[ring.middleware.cors :refer [wrap-cors]])
 
-#"^http://myapp.mydomain.com$"
-
 ;; accept everything
 (wrap-cors routes #".*")
 (wrap-cors routes identity)
