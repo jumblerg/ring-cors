@@ -22,7 +22,7 @@ simply pass the wrapper some regular expressions or a predicate that accepts the
 (wrap-cors routes identity)
 
 ;; accept some things
-(wrap-cors routes #"^.*localhost.*$" #"^.*mydomain.org$")
+(wrap-cors routes #".*localhost.*" #".*mydomain.org$")
 (wrap-cors routes #(= (:allowed-origin db) %))
 
 ;; accept one thing
