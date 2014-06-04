@@ -31,33 +31,24 @@
      "Access-Control-Allow-Headers" hstr
      "Access-Control-Allow-Methods" mthd }))
 
-(defn stnd-hdrs [res-hmap]
+(defn stnd-hdrs [{res-hmap :headers}]
   (let [hvec (apply dissoc res-hmap simple-hdrs)
         hstr (->> hvec keys (join ", ")) ]
     {"Access-Control-Expose-Headers" hstr} ))
 
+(defmacro guard [& body] `(try ~@body (catch Throwable _#)))
+
 (defn allow-origins [req handler & [allow :as orig-regxps]]
   (let [req-hmap (req :headers)
         req-orig (req-hmap "origin")
-        allow-fn #(some (fn [x] (re-matches x %1)) %2)
-        allow?   #(if (fn? allow) (allow %1) (allow-fn %1 orig-regxps))
-        preflt?  #(= (get % :request-method) :options)
-        mergeh   #(update-in %1 [:headers] (comp clean merge) (cors-hdrs req-hmap) %2) ]
-    (cond 
-      (nil? req-orig)
-        {:status 403 :headers {} :body "No Origin Header Specified on Cross-Origin Request"}
-      (nil? (allow? req-orig))
-        {:status 403 :headers {} :body (str "Origin " req-orig " Not Permitted on Cross-Origin Request")}
-      (preflt? req)
-        (cond
-          (nil? (req-hmap "access-control-request-method"))
-            {:status 403 :headers {} :body "No Access-Control-Request-Method Specified on COR Preflight"}
-          (nil? (req-hmap "access-control-request-headers"))
-            {:status 403 :headers {} :body "No Access-Control-Request-Headers Specified on COR Preflight"}
-          :else
-            (-> (handler req) (assoc :status 200) (mergeh (pflt-hdrs req-hmap))) )
-      :else 
-        (let [ret (handler req)] (mergeh ret (stnd-hdrs (ret :headers)))) )))
+        allow-fn #(some (fn [x] (guard (re-matches x %1))) %2)
+        mergeh   #(update-in %1 [:headers] (comp clean merge) (cors-hdrs req-hmap) %2)
+        cors-ok? (if (fn? allow) (allow req-orig) (allow-fn req-orig orig-regxps))
+        pflt-ok? (and cors-ok? (= (get req :request-method) :options))]
+    (let [resp (handler req)]
+      (cond pflt-ok? (-> resp (assoc :status 200) (mergeh (pflt-hdrs req-hmap))) 
+            cors-ok? (->> resp ((juxt identity stnd-hdrs)) (apply mergeh))
+            :else    resp))))
 
 ;;; public ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

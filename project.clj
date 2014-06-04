@@ -1,4 +1,4 @@
-(defproject jumblerg/ring.middleware.cors "1.0.0"
+(defproject jumblerg/ring.middleware.cors "1.0.1"
   :description  "Simple Ring middleware for easy cross-origin resource sharing (CORS)."
   :url          "https://github.com/jumblerg/ring.middleware.cors"
   :license      {:name "Eclipse Public License"
