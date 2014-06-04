@@ -12,25 +12,28 @@ the promise of black-box abstraction, realized here in the form of a ring handle
 
 ## application
 
-simply pass the wrapper some regular expressions or a predicate that accepts the request's origin.
+simply pass the wrapper some regular expressions or a predicate that accepts the request's origin. 
 
 ```clojure
 (require '[ring.middleware.cors :refer [wrap-cors]])
+
+#"^http://myapp.mydomain.com$"
 
 ;; accept everything
 (wrap-cors routes #".*")
 (wrap-cors routes identity)
 
 ;; accept some things
-(wrap-cors routes #".*localhost.*" #".*mydomain.org")
+(wrap-cors routes #"^.*localhost.*$" #"^.*mydomain.org$")
 (wrap-cors routes #(= (:allowed-origin db) %))
 
 ;; accept one thing
-(wrap-cors routes #"http://myapp.mydomain.org")
+(wrap-cors routes #"^http://myapp.mydomain.org$")
 
 ;; accept nothing
 (wrap-cors routes)
 ```
+notice that the regular expressions are anchored in order to prevent partial matches from being accepted.
 
 ## considerations
 
