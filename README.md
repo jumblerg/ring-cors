@@ -1,6 +1,6 @@
 # ring.middleware.cors [![Build Status][1]][2]
 
-simple middleware for easy cross-origin resource sharing
+simple ring middleware for easy cross-origin resource sharing
 
 ## rationale
 
