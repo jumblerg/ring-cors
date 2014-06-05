@@ -47,7 +47,7 @@ distributed with clojure under the eclipse public license
 
 [1]: https://travis-ci.org/jumblerg/ring.middleware.cors.png?branch=master
 [2]: https://travis-ci.org/jumblerg/ring.middleware.cors
-[3]: https://clojars.org/jumblerg/ring.middleware.cors/latest-version.svg?bustcache=1.0.0-1
+[3]: https://clojars.org/jumblerg/ring.middleware.cors/latest-version.svg?bustcache=1.0.1-1
 [4]: https://clojars.org/jumblerg/ring.middleware.cors
 [5]: http://stackoverflow.com/questions/15381105/cors-what-is-the-motivation-behind-introducing-preflight-requests
 [6]: http://www.w3.org/TR/cors/
