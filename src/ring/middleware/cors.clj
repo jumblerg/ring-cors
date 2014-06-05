@@ -14,6 +14,8 @@
 
 ;;; utilities ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defmacro guard [& body] `(try ~@body (catch Throwable _#)))
+
 (defn clean [map] (into {} (remove (comp nil? val) map)))
 
 ;;; private ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -35,8 +37,6 @@
   (let [hvec (apply dissoc res-hmap simple-hdrs)
         hstr (->> hvec keys (join ", ")) ]
     {"Access-Control-Expose-Headers" hstr} ))
-
-(defmacro guard [& body] `(try ~@body (catch Throwable _#)))
 
 (defn allow-origins [req handler & [allow :as orig-regxps]]
   (let [req-hmap (req :headers)
