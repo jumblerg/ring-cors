@@ -20,7 +20,7 @@
                :uri            "/"}
           res  {:status        200}
           ret ((wrap-cors (fn [_] res) #"http://authorizedorigin.com") req)]
-      (is (= (ret :status) 403)) ))
+      (is (not (get-header ret "Access-Control-Allow-Origin"))) ))
 
   (testing 
     "if the value of the origin header is not a case-sensitive match for any of the values 
@@ -31,7 +31,7 @@
                     :uri            "/"}
           res      {:status         200}
           ret      ((wrap-cors (fn [_] ) #"http://authorizedorigin.com") req)]
-      (is (= (ret :status) 403)) ))
+      (is (not (get-header ret "Access-Control-Allow-Origin"))) ))
 
   (testing
     "if the resource supports credentials add a single Access-Control-Allow-Origin header with 
@@ -87,8 +87,8 @@
                     :uri                             "/"}
           res      {:status                          200}
           ret ((wrap-cors (fn [_] res) #"http://authorizedorigin.com") req)]
-      (is (= (ret :status) 403)) ))
-
+      (is (not (get-header ret "Access-Control-Allow-Origin"))) ))
+ 
   (testing 
     "if the value of the origin header is not a case-sensitive match for any of the values 
     in list of origins do not set any additional headers and terminate"
@@ -100,7 +100,7 @@
                     :uri                             "/"}
           res      {:status                          200}
           ret      ((wrap-cors (fn [_] ) #"http://authorizedorigin.com") req)]
-      (is (= (ret :status) 403)) ))
+      (is (not (get-header ret "Access-Control-Allow-Origin"))) ))
 
   (testing
     "if there is no Access-Control-Request-Method header or if parsing failed, do not set any 
@@ -111,7 +111,7 @@
                     :uri            "/"}
           res      {:status         200}
           ret      ((wrap-cors (fn [_] ) #"http://authorizedorigin.com") req)]
-      (is (= (ret :status) 403)) ))
+      (is (not (get-header ret "Access-Control-Allow-Origin"))) ))
 
   (testing
     "if the resource supports credentials add a single Access-Control-Allow-Origin header, with 
