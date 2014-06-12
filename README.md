@@ -39,7 +39,7 @@ complexities such as the cors preflight [have little to do with security][5]. ra
 
 this middleware instructs the browser to cache the preflight for 24 hours based on a w3c discussion of the subject.  mozilla has adapted 24 hours as the max cache time for the preflight, while webkit will max out in just five minutes (some chrome documentation states the default is 1/2 hour).  the cache can be cleared manually from the browser if necessary during development.  in chrome, this is achieved by setting the "disable cache while devtools is open" flag in the development tools settings panel.  [sometimes maybe.][7]
 
-this middleware works with all desktop and mobile browsers except the usual suspects: if you must support internet explorers 8 and 9 ([full cors support was added by "the fourth platform of" ie 10][8]), this library alone cannot save you.  you may want to consider [ring.middleware.cors-ie][9] in combination with [eli grey's pmxdr solution][10].  read all about ie and cors on [caniuse][11] and [microsoft's website][12].  you're on your own with ie 6, however, [although other options do exist][13].
+this middleware works with all desktop and mobile browsers except the usual suspects: if you must support internet explorers 8 and 9 ([full cors support was added by "the fourth platform" of ie 10][8]), this library alone cannot save you.  you may want to consider [ring.middleware.cors-ie][9] in combination with [eli grey's pmxdr solution][10]. as for ie 6, you're on your own.  [other options do exist][13]; more information can be found regarding ie's partial cors support at [caniuse][11] and [microsoft's website][12]. 
 
 ## license
 
