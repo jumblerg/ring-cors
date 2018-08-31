@@ -1,2 +1,12 @@
-language: clojure
-lein: lein2
+language: java
+jdk:
+  - oraclejdk8
+cache:
+  directories:
+  - $HOME/.m2
+install:
+  - curl -s https://api.github.com/repos/boot-clj/boot/releases |grep 'download_url.*boot\.sh' |head -1 |sed 's/^.*[:] /wget -O boot /' |bash
+  - chmod 755 boot
+script:
+  - ./boot -V
+  - ./boot test
