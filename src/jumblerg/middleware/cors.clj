@@ -46,7 +46,6 @@
         cors-ok? (if (fn? allow) (allow req-orig) (allow-fn req-orig orig-regxps))
         pflt-ok? (and cors-ok? (= (get req :request-method) :options))]
     (let [res (handler req)]
-      (println :cors-ok? cors-ok? :pflt-ok? pflt-ok?)
       (cond pflt-ok? (-> res (assoc :status 200) (mergeh (pflt-hdrs req-hmap)))
             cors-ok? (->> res ((juxt identity stnd-hdrs)) (apply mergeh))
             :else    res))))
