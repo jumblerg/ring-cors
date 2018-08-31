@@ -78,7 +78,7 @@
           ret      ((wrap-cors (fn [_] res) #"http://authorizedorigin.com") req)]
       (is (= "http://authorizedorigin.com"  (get-header ret "Access-Control-Allow-Origin")))
       (is (= "true"                         (get-header ret "Access-Control-Allow-Credentials")))
-      (is (= "WWW-Authenticate, Set-Cookie" (get-header ret "Access-Control-Expose-Headers")))))
+      (is (= "Set-Cookie, WWW-Authenticate" (get-header ret "Access-Control-Expose-Headers")))))
 
   (testing
     "if the origin header is not present terminate the preflight."
