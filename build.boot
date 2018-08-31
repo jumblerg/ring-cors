@@ -1,44 +1,33 @@
-#!/usr/bin/env boot
+(set-env!
+  :resource-paths #{"src" "tst"}
+  :dependencies   '[[org.clojure/clojure "1.8.0"  :scope "provided"]
+                    [adzerk/bootlaces    "0.1.13" :scope "test"]
+                    [adzerk/boot-test    "1.1.2"  :scope "test"]])
 
-#tailrecursion.boot.core/version "2.3.1"
+(ns-unmap 'boot.user 'test)
 
-(def config (read-string (slurp "config.edn")))
-
-(apply set-env! (:main config))
-(add-sync! (get-env :out-path) (get-env :rsc-paths))
-
-(refer-clojure :exclude [test])
 (require
-  '[clojure.test                   :refer [run-tests]]
-  '[tailrecursion.boot.task.notify :refer [hear]]
-  '[ring.middleware.cors-test] )
+  '[adzerk.boot-test :refer [test]]
+  '[adzerk.bootlaces :refer :all])
 
-(deftask with-profile
-  "Setup build for the given profile from `config.edn`."
-  [profile]
-  (apply set-env! (get config profile))
-  (add-sync! (get-env :out-path) (get-env :rsc-paths))
-  identity )
+;;; configs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftask reload
-  "Reload the changed files"
-  [& namespaces]
-  (fn [continue]
-    (fn [event]
-      ;(apply require namespaces :reload)
-      (require 'ring.middleware.cors      :reload)
-      (require 'ring.middleware.cors-test :reload)
-      (continue event) )))
+(def +version+ "2.0.0")
+(bootlaces! +version+)
 
-(deftask test
-  "Run unit tests."
-  [& namespaces]
-  (fn [continue]
-    (fn [event]
-      (apply run-tests namespaces)
-      (continue event) )))
+;;; tasks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(deftask develop
-  "Run the unit tests each time the source changes."
-  []
-  (comp (watch) (hear) (test 'ring.middleware.cors-test) (reload 'ring.middleware.cors-test 'ring.middleware.cors)) )
+(deftask develop []
+  (comp (watch) (speak) (build-jar)))
+
+(deftask deploy []
+  (comp (speak) (build-jar) (push-release)))
+
+(task-options!
+  pom  {:project     'jumblerg/ring-cors
+        :version     +version+
+        :description "Simple Ring middleware for easy cross-origin resource sharing (CORS)."
+        :url         "https://github.com/jumblerg/ring-cors"
+        :scm         {:url "https://github.com/jumblerg/ring-cors"}
+        :license     {"EPL" "http://www.eclipse.org/legal/epl-v10.html"}}
+  test {:namespaces  ['jumblerg.middleware.cors-test]})
