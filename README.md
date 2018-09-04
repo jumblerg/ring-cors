@@ -44,8 +44,8 @@ copyright (c) jumblerg. all rights reserved.
 
 distributed with clojure under the eclipse public license
 
-[1]: https://travis-ci.org/jumblerg/ring.middleware.cors.png?branch=master
-[2]: https://travis-ci.org/jumblerg/ring.middleware.cors
+[1]: https://travis-ci.org/jumblerg/ring-cors.png?branch=master
+[2]: https://travis-ci.org/jumblerg/ring-cors
 [5]: http://stackoverflow.com/questions/15381105/cors-what-is-the-motivation-behind-introducing-preflight-requests
 [6]: http://www.w3.org/TR/cors/
 [7]: https://developers.google.com/storage/docs/cross-origin
