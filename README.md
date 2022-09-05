@@ -44,7 +44,7 @@ matches from being accepted.
 
 ## implementation
 if the request satisfies the predicate, and is determined to be a preflight (as
-indicated by an `access-control-request-method' header), `wrap-cors` will
+indicated by an `access-control-request-method` header), `wrap-cors` will
 respond with the access control headers expected by the browser, bypassing any
 downstream handlers.  `wrap-cors` will decorate any other requests from allowed
 origins with the required headers on their way out, and pass through all others
