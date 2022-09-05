@@ -21,7 +21,7 @@
   (comp (watch) (speak) (build-jar)))
 
 (deftask deploy []
-  (comp (speak) (build-jar) (push-release)))
+  (comp (speak) (build-jar) (push-snapshot)))
 
 (task-options!
   pom  {:project     'jumblerg/ring-cors
