@@ -21,7 +21,7 @@
 ;;; private ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defn cors-hdrs [req-hmap]
-  (let [orig  (req-hmap "origin")]
+  (let [orig (req-hmap "origin")]
     {"Access-Control-Allow-Origin"      orig
      "Access-Control-Allow-Credentials" "true"}))
 
@@ -38,23 +38,20 @@
         hstr (->> hvec keys (join ", "))]
     {"Access-Control-Expose-Headers" hstr}))
 
-(defn allow-origins [req handler & [allow :as orig-regxps]]
-  (let [req-hmap (req :headers)
-        req-orig (req-hmap "origin")
-        allow-fn #(some (fn [x] (guard (re-matches x %1))) %2)
-        mergeh   #(update %1 :headers (comp clean merge) (cors-hdrs req-hmap) %2)
-        cors-ok? (if (fn? allow) (allow req-orig) (allow-fn req-orig orig-regxps))
-        pflt-ok? (and cors-ok? (= (get req :request-method) :options))]
-    (let [res (handler req)]
-      (cond pflt-ok? (-> res (assoc :status 200) (mergeh (pflt-hdrs req-hmap)))
-            cors-ok? (->> res ((juxt identity stnd-hdrs)) (apply mergeh))
-            :else    res))))
+(defn allow-origins [req handle allow]
+  (let [req-hdrs   (req :headers)
+        merge-hdrs #(update %1 :headers (comp clean merge) (cors-hdrs req-hdrs) %2)]
+    (if (allow (req-hdrs "origin"))
+      (if (contains? req-hdrs "access-control-request-method")
+        (merge-hdrs {:status 204} (pflt-hdrs req-hdrs))
+        (apply merge-hdrs ((juxt identity stnd-hdrs) (handle req))))
+      (handle req))))
 
 ;;; public ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defn wrap-cors [handler & allowed-origins]
-  "Ring task for enabling cross-origin resource sharing (CORS) where allowed-
-   origins is a list of regular expressions matching the permitted origin(s) or
-   a single function which takes the origin as its argument to return a truthy
-   value if it is to be allowed."
-  (fn [req] (apply allow-origins req handler allowed-origins)))
+(defn wrap-cors [handle & [allow :as allowed-origins]]
+  "ring task for enabling cross-origin resource sharing (CORS) where allowed-
+   origins is either a predicate function that takes the origin as its argument
+   or a list of regular expressions matching the permitted origin(s)."
+  (let [allow (if (fn? allow) allow #(some (fn [x] (guard (re-matches x %1))) allowed-origins))]
+    (fn [req] (allow-origins req handle allow))))
