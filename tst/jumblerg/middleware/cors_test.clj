@@ -18,7 +18,7 @@
     (let [req {:headers        {}
                :request-method :get
                :uri            "/"}
-          res  {:status        200}
+          res  {:status        204}
           ret ((wrap-cors (fn [_] res) #"http://authorizedorigin.com") req)]
       (is (not (get-header ret "Access-Control-Allow-Origin")))))
 
@@ -30,7 +30,7 @@
           req      {:headers        req-hdrs
                     :request-method :get
                     :uri            "/"}
-          res      {:status         200}
+          res      {:status         204}
           ret      ((wrap-cors (fn [_] ) #"http://authorizedorigin.com") req)]
       (is (not (get-header ret "Access-Control-Allow-Origin")))))
 
@@ -46,7 +46,7 @@
           req      {:headers        req-hdrs
                     :request-method :get
                     :uri            "/"}
-          res      {:status         200}
+          res      {:status         204}
           ret      ((wrap-cors (fn [_] res) #"http://authorizedorigin.com") req)]
       (is (= "http://authorizedorigin.com" (get-header ret "Access-Control-Allow-Origin")))
       (is (= "true"                        (get-header ret "Access-Control-Allow-Credentials")))))
@@ -57,7 +57,7 @@
           req      {:headers        req-hdrs
                     :request-method :get
                     :uri            "/"}
-          res      {:status         200}
+          res      {:status         204}
           ret      ((wrap-cors (fn [_] res) #".*authorizedorigin.com" #".*example.com") req)]
       (is (= "http://authorizedorigin.com" (get-header ret "Access-Control-Allow-Origin")))
       (is (= "true"                        (get-header ret "Access-Control-Allow-Credentials")))))
@@ -74,7 +74,7 @@
                     "Set-Cookie"       "Example=Zm9vYmFyYmF6;Max-Age=3600;Path=/"
                     "WWW-Authenticate" "Basic realm=\"example\""}
           res      {:headers           res-hdrs
-                    :status            200}
+                    :status            204}
           ret      ((wrap-cors (fn [_] res) #"http://authorizedorigin.com") req)]
       (is (= "http://authorizedorigin.com"  (get-header ret "Access-Control-Allow-Origin")))
       (is (= "true"                         (get-header ret "Access-Control-Allow-Credentials")))
@@ -87,7 +87,7 @@
           req      {:headers                         req-hdrs
                     :request-method                  :options
                     :uri                             "/"}
-          res      {:status                          200}
+          res      {:status                          204}
           ret ((wrap-cors (fn [_] res) #"http://authorizedorigin.com") req)]
       (is (not (get-header ret "Access-Control-Allow-Origin")))))
 
@@ -100,7 +100,7 @@
           req      {:headers                         req-hdrs
                     :request-method                  :options
                     :uri                             "/"}
-          res      {:status                          200}
+          res      {:status                          204}
           ret      ((wrap-cors (fn [_] ) #"http://authorizedorigin.com") req)]
       (is (not (get-header ret "Access-Control-Allow-Origin"))) ))
 
@@ -111,7 +111,7 @@
           req      {:headers        req-hdrs
                     :request-method :options
                     :uri            "/"}
-          res      {:status         200}
+          res      {:status         204}
           ret      ((wrap-cors (fn [_] ) #"http://authorizedorigin.com") req)]
       (is (not (get-header ret "Access-Control-Allow-Origin")))))
 
@@ -128,9 +128,9 @@
           req      {:headers                         req-hdrs
                     :request-method                  :options
                     :uri                             "/"}
-          res      {:status                          200}
+          res      {:status                          204}
           ret      ((wrap-cors (fn [_] res) identity) req)]
-      (is (= (ret :status) 200))
+      (is (= 204 (ret :status) ))
       (is (= "http://authorizedorigin.com"     (get-header ret "Access-Control-Allow-Origin")))
       (is (= "true"                            (get-header ret "Access-Control-Allow-Credentials")))
       (is (= "GET"                             (get-header ret "Access-Control-Allow-Methods")))
