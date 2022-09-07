@@ -12,7 +12,7 @@
 
 ;;; configs ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(def +version+ "3.0.0-SNAPSHOT")
+(def +version+ "3.0.0")
 (bootlaces! +version+)
 
 ;;; tasks ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -21,7 +21,7 @@
   (comp (watch) (speak) (build-jar)))
 
 (deftask deploy []
-  (comp (speak) (build-jar) (push-snapshot)))
+  (comp (speak) (build-jar) (push-release)))
 
 (task-options!
   pom  {:project     'jumblerg/ring-cors

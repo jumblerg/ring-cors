@@ -3,7 +3,7 @@ simple ring middleware for easy cross-origin resource sharing
 
 [](dependency)
 ```clojure
-[jumblerg/ring-cors "3.0.0-SNAPSHOT"] ;; latest release
+[jumblerg/ring-cors "3.0.0"] ;; latest release
 ```
 [](/dependency)
 
